@@ -59,43 +59,63 @@ n = 1e8 #number of times one league dominates the other
 share = compute_prob_any(n, N, T)/n
 print(share) # approximately 0.08625
 
-N = 2 # number of leagues 
-T = 6 # number of teams per league 
+### More general example 
+N = 6 # number of leagues 
+T = 5 # number of teams per league 
 
-strength = rand(N*T)
-num_games = N*T-1 #number of games per team
-rounds = 1 #number of times facing each team
+matches = 162*ones(N*T,N*T) # number of games between each time 
+using LinearAlgebra
+matches[diagind(matches)] .= 0.0 #making teams not face themselves 
+total_games = transpose(sum(matches,dims=1))
+
+# removing lower diagonal elements so we don't have repeat games 
+for i = 1:N*T
+    for j = 1:N*T
+        if i > j 
+            matches[i,j] = 0.0
+        end
+    end
+end
+
+
 
 function prob_win(x,y)
     return x/(x+y)
 end
 
-function loop_through_league(N,T,strength) 
-    num_games = N*T-1
-    wins = zeros(N*T,num_games)
+function det_wins(wins, matches,strength, i,j)
+    if matches[i,j] == 0.0
+        
+    else 
+        for l = 1:matches[i,j]
+            draw = rand(1)
+            wins[i,j] = wins[i,j] + first(prob_win(strength[i],strength[j]) .>= draw) 
+            wins[j,i] = wins[j,i] + first(prob_win(strength[j],strength[i]) .> draw) 
+        end
+    end 
+    return wins 
+end
+
+function play_games(N,T,strength,matches) 
+    wins = zeros(N*T,N*T)
     for i = 1:N*T
-        for j =1:num_games
-            if i+j <= N*T
-                prob = prob_win(strength[i],strength[i+j])
-                wins[i,j] = first(prob .> rand(1)) 
-            end
+        for j = 1:N*T
+            wins = det_wins(wins, matches, strength, i, j)
         end
     end
     return wins
 end
 
-function compute_total_wins(rounds,N,T,strength)
-    strength = rand(N*T)
-    total_wins = zeros(N*T)
-    for w = 1:rounds
-        wins = loop_through_league(N,T,strength)
-        total_wins = total_wins + sum(wins,dims=2) + Array{Float64}(0:N*T-1)
-    end
-    return total_wins
+
+num = 0 
+num_iters = 1e6
+for i = 1:num_iters
+    strength = rand(N*T) .+ 0.75
+    total_wins = play_games(N,T,strength,matches)
+    total_wins = sum(total_wins,dims=2)
+    win_pct = total_wins./total_games 
+    by_league = reshape(win_pct, N, T)
+    num = num + ind_any_higher(by_league)
 end 
 
-total_wins = compute_total_wins(rounds,N,T,strength)
-
-
-total_games = num_games*rounds
-win_pct = total_wins/total_games 
+pct = num/num_iters

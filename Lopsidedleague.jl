@@ -1,5 +1,5 @@
 ## Lopsided League computation
-## Written by Charlie Smith
+## Written by Charlie 
 
 # Just two leagues 
 N = 2 # number of leagues 
@@ -23,8 +23,8 @@ function compute_prob(n,N,T)
     return sum 
 end 
 
-n = 1e8 #number of times one league dominates the other 
-share = compute_prob(n, N, T)/n
+n = 1e9 #number of simulations
+share = compute_prob(n, N, T)/n # percent of simulations where league 1 dominates league 2
 print(share) #approximately 0.003955
 
 ## Extra Credit 
@@ -63,10 +63,10 @@ print(share) # approximately 0.08625
 N = 6 # number of leagues 
 T = 5 # number of teams per league 
 
-matches = 162*ones(N*T,N*T) # number of games between each time 
+matches = 5*ones(N*T,N*T) # number of games between each team - leads to 5*(N*T-1) total games 
 using LinearAlgebra
 matches[diagind(matches)] .= 0.0 #making teams not face themselves 
-total_games = transpose(sum(matches,dims=1))
+total_games = transpose(sum(matches,dims=1)) #number of games each team plays
 
 # removing lower diagonal elements so we don't have repeat games 
 for i = 1:N*T
@@ -108,7 +108,7 @@ end
 
 
 num = 0 
-num_iters = 1e6
+num_iters = 1e8
 for i = 1:num_iters
     strength = rand(N*T) .+ 0.75
     total_wins = play_games(N,T,strength,matches)

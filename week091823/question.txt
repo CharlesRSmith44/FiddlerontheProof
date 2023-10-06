@@ -1,0 +1,18 @@
+This Week’s Fiddler
+
+From Dave Moran comes a look at the lopsided standings we often see in sports:
+
+About halfway through the current Major League Baseball season, all five teams in the American League East division had better records (i.e., winning percentages, or percent of games won) than all five teams in the American League Central region.
+
+Inspired by this surprising fact, suppose Fiddler League Baseball has six divisions, with five teams in each division. For simplicity, further suppose each team has a winning percentage chosen randomly, uniformly, and independently between zero percent and 100 percent.
+
+Let’s look at two divisions: The Enigma League East division and the Enigma League Central division. What is the probability that every team in the Enigma League East division has a higher winning percentage than every team in the Enigma League Central division?
+
+Submit your answer
+Extra Credit
+
+Dave Moran also came up with some Extra Credit for this puzzle:
+
+Among all six divisions in Fiddler League Baseball, what is the probability that there exist two divisions such that every team in one division has a higher winning percentage than every team in another division?
+
+(Note that this includes cases where multiple divisions are better or worse than others, such as having two divisions that both have higher winning percentages than some third division.)
